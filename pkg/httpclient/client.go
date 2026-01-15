@@ -67,7 +67,10 @@ func doReq(c *fasthttp.Client, req *fasthttp.Request, timeout uint) ([]byte, err
 		return nil, ErrNilResponse
 	}
 
-	return resp.Body(), nil
+	// Make a copy of the body before releasing the response
+	body := make([]byte, len(resp.Body()))
+	copy(body, resp.Body())
+	return body, nil
 }
 
 func getUserAgent() string {
